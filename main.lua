@@ -14,6 +14,7 @@ william.width = 200
 william.height = 130
 william.x = 100
 william.y = 100
+william.readyToThrow = true
 
 local elliot = display.newImage( "elliot.png" )
 
@@ -22,7 +23,7 @@ elliot.height = 180
 elliot.x = 100
 elliot.y = 300
 
-local boomerang = display.newImage( "boomerang.png" )
+local boomerang = display.newImage( "boomerang2.png" )
 
 boomerang.thrown = false
 boomerang.width = 50
@@ -52,22 +53,20 @@ local function touch_william(actor, event)
         
         display.getCurrentStage():setFocus( actor, event.id )
         
-        if boomerang.thrown == false then
+        if boomerang.thrown == false and actor.readyToThrow then
+            actor.readyToThrow = false
             boomerang.thrown = true
-            boomerang.x = actor.x + 200
-            boomerang.y = actor.y + 200
+            boomerang.timer = 0
+            boomerang.x = actor.x
+            boomerang.y = actor.y
         end
     elseif event.phase == "moved" then
         actor.x = event.x
         actor.y = event.y
         
-        if boomerang.thrown == false then
-            boomerang.x = event.x - 50
-            boomerang.y = event.y - 50
-        end
-        
     elseif event.phase == "ended" or event.phase == "cancelled" then
         display.getCurrentStage():setFocus( actor, nil )
+        actor.readyToThrow = true
     end
 end
 
@@ -124,17 +123,34 @@ local function distance(object1, object2)
     return math.sqrt((xDist * xDist) + (yDist * yDist))
 end
 
-
-local function enterFrame()
+local function animateBoomerang()
     if boomerang.thrown then
-        boomerang.x = boomerang.x + (william.x - boomerang.x) * 0.01
-        boomerang.y = boomerang.y + (william.y - boomerang.y) * 0.01
+        boomerang.timer = boomerang.timer + 1
         
-        if distance(boomerang, william) < 100 then
+        boomerang.rotation = boomerang.rotation + 20
+        
+        if boomerang.timer < 30 then
+            boomerang.x = boomerang.x + 14
+            boomerang.y = boomerang.y - 2
+        else
+            boomerang.x = boomerang.x + (william.x - boomerang.x) * (boomerang.timer / 1000)
+            boomerang.y = boomerang.y + (william.y - boomerang.y) * (boomerang.timer / 1000)
+        end
+        
+        if distance(boomerang, william) < 100 and boomerang.timer > 30 then
             boomerang.thrown = false
         end
+        
+    else
+        boomerang.rotation = 20
+        boomerang.x = william.x - 45
+        boomerang.y = william.y - 50
     end
     
+end
+
+local function enterFrame()
+    animateBoomerang()
     moveAllIceShots()
 end
 
