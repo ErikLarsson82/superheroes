@@ -31,6 +31,31 @@ boomerang.height = 50
 boomerang.x = 500
 boomerang.y = 500
 
+local alien = display.newGroup()
+alien.x = 600
+alien.y = 400
+
+
+alien.legs = display.newImage(alien, "alien/alien_legs1.png")
+alien.legs.x = 0
+alien.legs.y = 180
+alien.body = display.newImage(alien, "alien/alien_body.png")
+alien.body.x = 20
+alien.body.y = 0
+alien.head = display.newImage(alien, "alien/alien_head.png")
+alien.head.x = 40
+alien.head.y = -150
+alien.head.xScale = 0.8
+alien.head.yScale = 0.8
+alien.eyes = display.newImage(alien, "alien/alien_eyes.png")
+alien.eyes.x = 40
+alien.eyes.y = -120
+alien.eyes.xScale = 0.8
+alien.eyes.yScale = 0.8
+
+alien.xScale = 0.35
+alien.yScale = 0.35
+
 local iceShots = {}
 
 local function moveAllIceShots()
@@ -119,7 +144,7 @@ local function distance(object1, object2)
         yDist = object1.y - object2.y 
     else
         yDist = object2.y - object1.y 
-    end
+    end 
     return math.sqrt((xDist * xDist) + (yDist * yDist))
 end
 
